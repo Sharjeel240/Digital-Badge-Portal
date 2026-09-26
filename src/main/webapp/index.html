@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verified Digital Skill-Badge Portal</title>
+    <!-- Fonts: Playfair Display (Editorial Serif) + Plus Jakarta Sans (Modern Geometric Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* DARK THEME VARIABLES (DEFAULT) */
+        [data-theme="dark"] {
+            --bg-dark: #0a0c10;
+            --bg-mesh-1: rgba(99, 102, 241, 0.12);
+            --bg-mesh-2: rgba(6, 182, 212, 0.1);
+            --accent-glow: #6366f1;
+            --accent-cyan: #06b6d4;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.07);
+            --nav-bg: rgba(15, 23, 42, 0.6);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --title-gradient: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            --card-inner-bg: rgba(0, 0, 0, 0.25);
+            --input-bg: rgba(0, 0, 0, 0.4);
+            --gold: #f59e0b;
+            --silver: #94a3b8;
+            --bronze: #d97706;
+        }
+
+        /* LIGHT THEME VARIABLES */
+        [data-theme="light"] {
+            --bg-dark: #f8fafc;
+            --bg-mesh-1: rgba(99, 102, 241, 0.08);
+            --bg-mesh-2: rgba(6, 182, 212, 0.08);
+            --accent-glow: #4f46e5;
+            --accent-cyan: #0284c7;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(226, 232, 240, 0.8);
+            --glass-hover: rgba(255, 255, 255, 0.9);
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --title-gradient: linear-gradient(135deg, #0f172a 30%, #334155 100%);
+            --card-inner-bg: rgba(241, 245, 249, 0.7);
+            --input-bg: #ffffff;
+            --gold: #d97706;
+            --silver: #64748b;
+            --bronze: #b45309;
+        }
+
+        :root {
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 15% 20%, var(--bg-mesh-1) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, var(--bg-mesh-2) 0%, transparent 45%);
+            background-attachment: fixed;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* HEADER SECTION WITH INLINE THEME TOGGLE */
+        .header {
+            padding: 48px 20px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-title-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: var(--title-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        /* TOGGLE BUTTON STYLING */
+        .theme-toggle-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 99px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-glow);
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-weight: 600;
+        }
+
+        /* NAVIGATION TABS */
+        .nav-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 0 20px 32px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 6px;
+            padding: 6px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 99px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .tab-button {
+            padding: 10px 22px;
+            border: none;
+            background: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 99px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: var(--text-main);
+            background: rgba(150, 150, 150, 0.08);
+        }
+
+        .tab-button.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-cyan));
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        /* CONTAINER & TAB SWITCHING */
+        .container {
+            max-width: 1040px;
+            width: 100%;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* BENTO GRID LAYOUTS */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .bento-asymmetric {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 768px) {
+            .bento-grid, .bento-asymmetric {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* GLASS BENTO CARDS */
+        .bento-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover {
+            border-color: var(--accent-glow);
+            background: var(--glass-hover);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
+        }
+
+        .bento-full {
+            grid-column: 1 / -1;
+        }
+
+        /* TYPOGRAPHY IN CARDS */
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+        }
+
+        p.desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        /* FORM ELEMENTS & INPUTS */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        /* BUTTONS */
+        .btn-glow {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-glow), var(--accent-cyan));
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-cgi {
+            background: linear-gradient(135deg, #10b981, #059669);
+            margin-top: 10px;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-cgi:hover {
+            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.35);
+        }
+
+        /* BADGE TIER BENTO CARDS */
+        .tier-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 768px) {
+            .tier-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tier-card {
+            background: var(--card-inner-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tier-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .tier-card.gold { border-top: 3px solid var(--gold); }
+        .tier-card.silver { border-top: 3px solid var(--silver); }
+        .tier-card.bronze { border-top: 3px solid var(--bronze); }
+
+        .tier-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            border-radius: 99px;
+            margin: 8px 0 12px;
+        }
+
+        .badge-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-silver { background: rgba(148, 163, 184, 0.15); color: var(--silver); border: 1px solid rgba(148, 163, 184, 0.3); }
+        .badge-bronze { background: rgba(217, 119, 6, 0.15); color: var(--bronze); border: 1px solid rgba(217, 119, 6, 0.3); }
+
+        .tier-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* BENCHMARK TABLE (ONLY TAB 5) */
+        .benchmark-section {
+            margin-top: 32px;
+            padding-top: 28px;
+            border-top: 1px dashed var(--glass-border);
+        }
+
+        table.metrics-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 16px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            background: var(--card-inner-bg);
+        }
+
+        table.metrics-table th, table.metrics-table td {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        table.metrics-table th {
+            background: rgba(150, 150, 150, 0.05);
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        table.metrics-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .insight-box {
+            margin-top: 20px;
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 18px;
+            border-radius: var(--radius-md);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .insight-box strong {
+            color: var(--accent-glow);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="header">
+    <div class="header-title-container">
+        <h1>Verified Digital Skill-Badge Portal</h1>
+        <!-- LIGHT / DARK MODE TOGGLE BUTTON -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle Mode">
+            <span id="themeIcon">🌙</span>
+            <span id="themeText">Dark</span>
+        </button>
+    </div>
+    <p>CGI vs. Servlet Benchmark Engine</p>
+</div>
+
+<!-- NAVIGATION TAB BAR -->
+<div class="nav-wrapper">
+    <div class="tab-bar">
+        <button class="tab-button active" onclick="openTab(event, 'tab-modules')">Course Modules</button>
+        <button class="tab-button" onclick="openTab(event, 'tab-issue')">Issue Badge</button>
+        <button class="tab-button" onclick="openTab(event, 'tab-verify')">Public Verification</button>
+        <button class="tab-button" onclick="openTab(event, 'tab-wallet')">Student Wallet</button>
+        <button class="tab-button" onclick="openTab(event, 'tab-tiers')">Badge Tiers</button>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- 1. COURSE MODULES -->
+    <div id="tab-modules" class="tab-content active">
+        <div style="padding: 10px 0; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;">
+            <!-- Section Header -->
+            <div style="margin-bottom: 24px;">
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0 0 6px 0; color: var(--text-main, #f8fafc);">Explore Available Skill Tracks</h2>
+                <p style="color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin: 0;">Complete course tracks to automatically earn verifiable digital skill badges.</p>
+            </div>
+
+            <!-- Course Grid Container -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+
+                <!-- Course Card 1: Completed (Gold Tier) -->
+                <div style="background: var(--card-inner-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <div style="height: 120px; background: linear-gradient(135deg, #1e1b4b, #312e81); position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                            <span style="font-size: 26px;">☕</span>
+                        </div>
+                        <span style="position: absolute; top: 12px; right: 12px; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">✓ Completed</span>
+                    </div>
+                    <div style="padding: 18px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem;">
+                            <span class="tier-badge badge-gold" style="margin: 0;">Score: 94% (Gold)</span>
+                            <span style="color: var(--text-muted, #94a3b8); font-weight: 500;">⏱️ 4 Weeks (12 hrs)</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main, #f8fafc); margin: 0 0 8px 0; line-height: 1.3;">Servlet & JSP Fundamentals</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted, #94a3b8); line-height: 1.4; margin: 0 0 18px 0; flex-grow: 1;">Master Java Enterprise Edition, HttpServlet request processing, and dynamic database rendering.</p>
+                        <div style="margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-bottom: 6px; font-weight: 600;">
+                                <span>Completion Progress</span>
+                                <strong style="color: var(--text-main, #f8fafc);">100%</strong>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #06b6d4, #10b981); border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 2: In Progress (Silver Tier) -->
+                <div style="background: var(--card-inner-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <div style="height: 120px; background: linear-gradient(135deg, #064e3b, #047857); position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                            <span style="font-size: 26px;">🐍</span>
+                        </div>
+                        <span style="position: absolute; top: 12px; right: 12px; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);">In Progress</span>
+                    </div>
+                    <div style="padding: 18px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem;">
+                            <span class="tier-badge badge-silver" style="margin: 0;">Score: 82% (Silver)</span>
+                            <span style="color: var(--text-muted, #94a3b8); font-weight: 500;">⏱️ 3 Weeks (9 hrs)</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main, #f8fafc); margin: 0 0 8px 0; line-height: 1.3;">Python CGI & Backend Automation</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted, #94a3b8); line-height: 1.4; margin: 0 0 18px 0; flex-grow: 1;">Build command-line execution pipelines and inter-process CGI script verifiers.</p>
+                        <div style="margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-bottom: 6px; font-weight: 600;">
+                                <span>Completion Progress</span>
+                                <strong style="color: var(--text-main, #f8fafc);">65%</strong>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+                                <div style="width: 65%; height: 100%; background: linear-gradient(90deg, #06b6d4, #10b981); border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 3: Completed (Gold Tier) -->
+                <div style="background: var(--card-inner-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <div style="height: 120px; background: linear-gradient(135deg, #701a75, #a21caf); position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                            <span style="font-size: 26px;">⚡</span>
+                        </div>
+                        <span style="position: absolute; top: 12px; right: 12px; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">✓ Completed</span>
+                    </div>
+                    <div style="padding: 18px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem;">
+                            <span class="tier-badge badge-gold" style="margin: 0;">Score: 90% (Gold)</span>
+                            <span style="color: var(--text-muted, #94a3b8); font-weight: 500;">⏱️ 2 Weeks (6 hrs)</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main, #f8fafc); margin: 0 0 8px 0; line-height: 1.3;">SQL Schema & Database Management</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted, #94a3b8); line-height: 1.4; margin: 0 0 18px 0; flex-grow: 1;">Design AUTO_INCREMENT tables, construct relational indexes, and manage MySQL connections.</p>
+                        <div style="margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-bottom: 6px; font-weight: 600;">
+                                <span>Completion Progress</span>
+                                <strong style="color: var(--text-main, #f8fafc);">100%</strong>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #06b6d4, #10b981); border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 4: In Progress (Bronze Tier) -->
+                <div style="background: var(--card-inner-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <div style="height: 120px; background: linear-gradient(135deg, #0c4a6e, #0284c7); position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                            <span style="font-size: 26px;">🎨</span>
+                        </div>
+                        <span style="position: absolute; top: 12px; right: 12px; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);">In Progress</span>
+                    </div>
+                    <div style="padding: 18px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem;">
+                            <span class="tier-badge badge-bronze" style="margin: 0;">Score: 70% (Bronze)</span>
+                            <span style="color: var(--text-muted, #94a3b8); font-weight: 500;">⏱️ 5 Weeks (15 hrs)</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main, #f8fafc); margin: 0 0 8px 0; line-height: 1.3;">Glassmorphic UI & Theme Systems</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted, #94a3b8); line-height: 1.4; margin: 0 0 18px 0; flex-grow: 1;">Craft responsive glass-like UI panels, CSS custom properties, and dark mode toggles.</p>
+                        <div style="margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-bottom: 6px; font-weight: 600;">
+                                <span>Completion Progress</span>
+                                <strong style="color: var(--text-main, #f8fafc);">45%</strong>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+                                <div style="width: 45%; height: 100%; background: linear-gradient(90deg, #06b6d4, #10b981); border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 5: In Progress (Bronze Tier) -->
+                <div style="background: var(--card-inner-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <div style="height: 120px; background: linear-gradient(135deg, #1e3a8a, #2563eb); position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                            <span style="font-size: 26px;">🐳</span>
+                        </div>
+                        <span style="position: absolute; top: 12px; right: 12px; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);">In Progress</span>
+                    </div>
+                    <div style="padding: 18px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem;">
+                            <span class="tier-badge badge-bronze" style="margin: 0;">Score: 68% (Bronze)</span>
+                            <span style="color: var(--text-muted, #94a3b8); font-weight: 500;">⏱️ 4 Weeks (12 hrs)</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main, #f8fafc); margin: 0 0 8px 0; line-height: 1.3;">Docker & Microservice Deployment</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted, #94a3b8); line-height: 1.4; margin: 0 0 18px 0; flex-grow: 1;">Containerize Tomcat servlets and CGI scripts with Docker Compose and orchestration tools.</p>
+                        <div style="margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-bottom: 6px; font-weight: 600;">
+                                <span>Completion Progress</span>
+                                <strong style="color: var(--text-main, #f8fafc);">30%</strong>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+                                <div style="width: 30%; height: 100%; background: linear-gradient(90deg, #06b6d4, #10b981); border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 6: In Progress (Bronze Tier) -->
+                <div style="background: var(--card-inner-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08)); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                    <div style="height: 120px; background: linear-gradient(135deg, #881337, #e11d48); position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
+                            <span style="font-size: 26px;">🔐</span>
+                        </div>
+                        <span style="position: absolute; top: 12px; right: 12px; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);">In Progress</span>
+                    </div>
+                    <div style="padding: 18px; display: flex; flex-direction: column; flex-grow: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem;">
+                            <span class="tier-badge badge-bronze" style="margin: 0;">Score: 60% (Bronze)</span>
+                            <span style="color: var(--text-muted, #94a3b8); font-weight: 500;">⏱️ 3 Weeks (10 hrs)</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main, #f8fafc); margin: 0 0 8px 0; line-height: 1.3;">Web Security & OAuth2 Integration</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted, #94a3b8); line-height: 1.4; margin: 0 0 18px 0; flex-grow: 1;">Implement secure authentication flows, token verification, and protection against web vulnerabilities.</p>
+                        <div style="margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted, #94a3b8); margin-bottom: 6px; font-weight: 600;">
+                                <span>Completion Progress</span>
+                                <strong style="color: var(--text-main, #f8fafc);">20%</strong>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+                                <div style="width: 20%; height: 100%; background: linear-gradient(90deg, #06b6d4, #10b981); border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ISSUE BADGE -->
+    <div id="tab-issue" class="tab-content">
+        <div class="bento-asymmetric">
+            <div class="bento-card" style="display: flex; flex-direction: column; justify-content: center;">
+                <span style="font-size: 2.5rem; margin-bottom: 12px;">🏅</span>
+                <h2>Micro-Credential Badges</h2>
+                <p class="desc" style="margin-bottom: 0;">Issue tamper-evident digital badges dynamically linked to database state.</p>
+            </div>
+
+            <div class="bento-card">
+                <h2>Issue Badge</h2>
+                <p class="desc">Provide student details to generate and store a new verification code:</p>
+                
+                <form action="IssueBadgeServlet" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentId">Student ID</label>
+                            <input type="number" id="studentId" name="studentId" value="101" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentName">Student Name</label>
+                            <input type="text" id="studentName" name="studentName" value="Rahul" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="courseName">Course Title</label>
+                            <input type="text" id="courseName" name="courseName" value="Servlet Fundamentals" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="score">Score</label>
+                            <input type="number" id="score" name="score" min="0" max="100" value="92" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-glow">Generate Badge</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. PUBLIC VERIFICATION -->
+    <div id="tab-verify" class="tab-content">
+        <div class="bento-asymmetric">
+            <div class="bento-card" style="display: flex; flex-direction: column; justify-content: center;">
+                <span style="font-size: 2.5rem; margin-bottom: 12px;">🔍</span>
+                <h2>Public Verification</h2>
+                <p class="desc" style="margin-bottom: 0;">Verify badge authenticity using Servlet or CGI engine lookups.</p>
+            </div>
+
+            <div class="bento-card">
+                <h2>Public Verification</h2>
+                <p class="desc">Enter the verification code to check badge authenticity:</p>
+                
+                <form action="VerifyBadgeServlet" method="GET">
+                    <div class="form-group">
+                        <label for="code">Verification Code</label>
+                        <input type="text" id="code" name="code" placeholder="Enter code" required>
+                    </div>
+                    <button type="submit" class="btn-glow">Verify (Servlet Engine)</button>
+                </form>
+
+                <form action="cgi-bin/verify" method="GET">
+                    <input type="hidden" name="code" id="cgiCode">
+                    <button type="submit" class="btn-glow btn-cgi" onclick="document.getElementById('cgiCode').value = document.getElementById('code').value;">
+                        Verify (CGI Engine)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. STUDENT WALLET -->
+    <div id="tab-wallet" class="tab-content">
+        <div class="bento-asymmetric">
+            <div class="bento-card" style="display: flex; flex-direction: column; justify-content: center;">
+                <span style="font-size: 2.5rem; margin-bottom: 12px;">💼</span>
+                <h2>Student Wallet</h2>
+                <p class="desc" style="margin-bottom: 0;">View earned badges, scores, and active credential tiers.</p>
+            </div>
+
+            <div class="bento-card">
+                <h2>Student Wallet</h2>
+                <p class="desc">Access active student badges and profile overview:</p>
+                
+                <form action="wallet.jsp" method="GET">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="walletStudentId">Student ID</label>
+                            <input type="number" id="walletStudentId" name="studentId" value="101" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="walletStudentName">Student Name</label>
+                            <input type="text" id="walletStudentName" name="studentName" placeholder="Rahul">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-glow">Open Badge Wallet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. BADGE TIERS & BENCHMARK TABLE -->
+    <div id="tab-tiers" class="tab-content">
+        <div class="bento-card bento-full">
+            <h2>Badge Tiers</h2>
+            <p class="desc">Badge tiers are evaluated based on final module assessment scores:</p>
+            
+            <div class="tier-container">
+                <div class="tier-card gold">
+                    <h3 style="font-size: 1.1rem; color: var(--text-main);">Gold Tier</h3>
+                    <span class="tier-badge badge-gold">Score: 90 - 100%</span>
+                    <p>Demonstrates complete proficiency and exceptional module mastery.</p>
+                </div>
+                <div class="tier-card silver">
+                    <h3 style="font-size: 1.1rem; color: var(--text-main);">Silver Tier</h3>
+                    <span class="tier-badge badge-silver">Score: 75 - 89%</span>
+                    <p>Demonstrates solid technical understanding and successful lab work.</p>
+                </div>
+                <div class="tier-card bronze">
+                    <h3 style="font-size: 1.1rem; color: var(--text-main);">Bronze Tier</h3>
+                    <span class="tier-badge badge-bronze">Score: 0 - 74%</span>
+                    <p>Fulfills baseline course requirements and basic completion criteria.</p>
+                </div>
+            </div>
+
+            <div class="benchmark-section">
+                <h2>⚙️ Response-Time & Concurrency Benchmark Analysis</h2>
+                <p class="desc">Comparative verification performance lookup between CGI and Servlet implementations.</p>
+
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Concurrent Requests</th>
+                            <th>CGI Engine Avg Latency</th>
+                            <th>Servlet Engine Avg Latency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>10 Requests</strong></td>
+                            <td>24.5 ms</td>
+                            <td>2.1 ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>50 Requests</strong></td>
+                            <td>112.3 ms</td>
+                            <td>6.4 ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>100 Requests</strong></td>
+                            <td>245.8 ms</td>
+                            <td>11.2 ms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>500 Requests</strong></td>
+                            <td>1250.4 ms</td>
+                            <td>28.6 ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="insight-box">
+                    <strong>Architecture Insight:</strong> The CGI Engine forks a separate OS process for every lookup hit, resulting in process creation and DB re-authentication overhead. The Servlet Engine utilizes multi-threaded execution within a persistent JVM process with pooled JDBC connections, providing significantly lower response times under load.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// TAB NAVIGATION FUNCTION
+function openTab(evt, tabId) {
+    var contents = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < contents.length; i++) {
+        contents[i].classList.remove("active");
+    }
+    
+    var buttons = document.getElementsByClassName("tab-button");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+    }
+    
+    document.getElementById(tabId).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
+// LIGHT/DARK THEME TOGGLE SCRIPT
+function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('portalTheme', newTheme);
+    updateToggleUI(newTheme);
+}
+
+function updateToggleUI(theme) {
+    const icon = document.getElementById('themeIcon');
+    const text = document.getElementById('themeText');
+    if (theme === 'dark') {
+        icon.textContent = '🌙';
+        text.textContent = 'Dark';
+    } else {
+        icon.textContent = '☀️';
+        text.textContent = 'Light';
+    }
+}
+
+// RESTORE SAVED THEME ON PAGE LOAD
+(function initTheme() {
+    const savedTheme = localStorage.getItem('portalTheme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+    updateToggleUI(savedTheme);
+})();
+</script>
+
+</body>
+</html>
